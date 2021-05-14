@@ -4,6 +4,7 @@
 /.settings/
 /bin/
 /logs/
+/debug-logs/
 /target/
 /.idea/
 /onboarding-app-open.iml
