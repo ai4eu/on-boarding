@@ -153,9 +153,11 @@ public class ProtobufGeneratorService {
 			if (line.contains("syntax")) {
 				protoBufClass.setSyntax(constructSyntax(line));
 			}
-			// construct package
-			if (line.startsWith("package")) {
-				protoBufClass.setPackageName(constructPackage(line));
+			// check for package and imports
+			if (line.trim().startsWith("package") || line.trim().startsWith("image") ) {
+				String message="package or import declaration not allowed in proto-files: "+line;
+				logger.error(message);
+				throw new ServiceException(message, Properties.getDecryptionErrorCode(), message);
 			}
 			if (Properties.isOptionKeywordRequirede().equals("true")) {
 				if (line.startsWith("option")) {
@@ -222,8 +224,8 @@ public class ProtobufGeneratorService {
 			}
 		} catch (Exception ex) {
 			logger.error("Exception Occured  parseLine()", ex);
-			throw new ServiceException("Exception Occured while parsing protobuf",
-					Properties.getDecryptionErrorCode(), "Error while parsing protoBuf file", ex.getCause());
+			throw new ServiceException("Exception Occured while parsing protobuf: "+ex.getMessage(),
+					Properties.getDecryptionErrorCode(), ex.getMessage(), ex.getCause());
 		}
 
 	}
