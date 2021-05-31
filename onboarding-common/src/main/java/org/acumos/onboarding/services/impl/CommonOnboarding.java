@@ -834,6 +834,7 @@ public class CommonOnboarding {
 			logger.error("Fail to generate TOSCA for solution - " + e);
 			// Storage of artifact location references in Common Data
 			// Store-failure
+			throw e;
 		}
 	}
 
