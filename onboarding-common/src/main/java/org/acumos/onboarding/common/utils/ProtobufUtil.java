@@ -174,27 +174,27 @@ public class ProtobufUtil {
 		Scanner scanner = new Scanner(serviceStr);
 		ProtobufService service = new ProtobufService();
 		try{
-		while (scanner.hasNextLine()) {
-			  String line = scanner.nextLine().trim();
-			  if(line.startsWith("service")){
-				  String name = line.replace("\t", "").replace("service", "").trim();
-				  if(name.contains("{")){
-					  name = name.substring(0, name.lastIndexOf("{")).trim();
-				  } else {
-					  name = name.trim();
-				  }
-				  service.setName(name);
-			  } else if(line.length() > 1){
-				  if(line.indexOf("{") > - 1){
-					  line = line.replace("{", "").trim();
-				  }
-				  if(line.contains("}")){
-					  line = line.replace("}", "").trim();
-				  }
-				  ProtobufServiceOperation operation = parseServiceOperation(line);
-				  service.getOperations().add(operation);
-			  }
-		}
+			while (scanner.hasNextLine()) {
+				String line = scanner.nextLine().trim();
+				if(line.startsWith("service")){
+					String name = line.replace("\t", "").replace("service", "").trim();
+					if(name.contains("{")){
+						name = name.substring(0, name.lastIndexOf("{")).trim();
+					} else {
+						name = name.trim();
+					}
+					service.setName(name);
+				} else if(line.length() > 1){
+					if(line.indexOf("{") > - 1){
+						line = line.replace("{", "").trim();
+					}
+					if(line.contains("}")){
+						line = line.replace("}", "").trim();
+					}
+					ProtobufServiceOperation operation = parseServiceOperation(line);
+					service.getOperations().add(operation);
+				}
+			}
 		}
 		finally {
 			scanner.close();
