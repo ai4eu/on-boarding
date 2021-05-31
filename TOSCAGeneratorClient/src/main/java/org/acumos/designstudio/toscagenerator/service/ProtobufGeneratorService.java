@@ -367,7 +367,7 @@ public class ProtobufGeneratorService {
 					inputMessage.setStream(true);
 					inputMessage.setInputMessageName(parts[1]);
 				} else {
-					throw new ServiceException("service operation has invalid input parameter '"+inPutParameterArray[i]+"'", ServiceException.TOSCA_FILE_GENERATION_ERROR_CODE, ServiceException.TOSCA_FILE_GENERATION_ERROR_DESC);
+					throw new ServiceException("service operation has invalid input parameter '"+inPutParameterArray[i]+"' parts="+parts.length+" parts[0]="+parts[0], ServiceException.TOSCA_FILE_GENERATION_ERROR_CODE, ServiceException.TOSCA_FILE_GENERATION_ERROR_DESC);
 				}
 			}
 
@@ -400,7 +400,7 @@ public class ProtobufGeneratorService {
 					outputMessage.setStream(true);
 					outputMessage.setOutPutMessageName(parts[1]);
 				} else {
-					throw new ServiceException("service operation has invalid output parameter '"+outPutParameterArray[i]+"'", ServiceException.TOSCA_FILE_GENERATION_ERROR_CODE, ServiceException.TOSCA_FILE_GENERATION_ERROR_DESC);
+					throw new ServiceException("service operation has invalid output parameter '"+outPutParameterArray[i]+"' parts="+parts.length+" parts[0]="+parts[0], ServiceException.TOSCA_FILE_GENERATION_ERROR_CODE, ServiceException.TOSCA_FILE_GENERATION_ERROR_DESC);
 				}
 			}
 
