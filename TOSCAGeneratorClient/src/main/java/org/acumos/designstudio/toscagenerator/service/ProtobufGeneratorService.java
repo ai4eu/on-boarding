@@ -127,13 +127,12 @@ public class ProtobufGeneratorService {
 			logger.error(
 					"Exception Occured  CreateProtoJson() when Reading the protobuf file and generating protobuf json",
 					ex);
-			throw new ServiceException(ex.getMessage(), ex.getErrorCode(), ex.getErrorDesc(), ex.getCause());
-
+			throw ex;
 		} catch (Exception ex) {
 			logger.error(
 					"Exception Occured  CreateProtoJson() when Reading the protobuf file and generating protobuf json",
 					ex);
-			throw ex;
+			throw new ServiceException(ex.toString(), ServiceException.TOSCA_FILE_GENERATION_ERROR_CODE, ServiceException.TOSCA_FILE_GENERATION_ERROR_DESC, ex);
 		} finally {
 			try {
 				if (br != null)
