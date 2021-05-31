@@ -363,7 +363,7 @@ public class ProtobufGeneratorService {
 				inputMessage.setStream(false);
 				inputMessage.setInputMessageName(parts[0]);
 			} else {
-				if (parts.length == 2 && parts[0] == "stream") {
+				if (parts.length == 2 && parts[0].equals("stream")) {
 					inputMessage.setStream(true);
 					inputMessage.setInputMessageName(parts[1]);
 				} else {
@@ -396,7 +396,7 @@ public class ProtobufGeneratorService {
 				outputMessage.setStream(false);
 				outputMessage.setOutPutMessageName(parts[0]);
 			} else {
-				if (parts.length == 2 && parts[0] == "stream") {
+				if (parts.length == 2 && parts[0].equals("stream")) {
 					outputMessage.setStream(true);
 					outputMessage.setOutPutMessageName(parts[1]);
 				} else {
