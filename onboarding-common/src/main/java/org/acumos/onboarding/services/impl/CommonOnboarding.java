@@ -919,8 +919,9 @@ public class CommonOnboarding {
 
 		//Check if the lastProtobuf is not null
 		if (lastProtobufString != null && !lastProtobufString.isEmpty()) {
-			protoBuf1 = ProtobufUtil.parseProtobuf(lastProtobufString);
-			protoBuf2 = ProtobufUtil.parseProtobuf(currentProtobufString);
+			// protoBuf1 = ProtobufUtil.parseProtobuf(lastProtobufString);
+			// protoBuf2 = ProtobufUtil.parseProtobuf(currentProtobufString);
+			throw new RuntimeError("there was code here that we commented out: compare protobuf versions");
 		}
 		String verA = countMajor;
 		String verB = countMinor;
