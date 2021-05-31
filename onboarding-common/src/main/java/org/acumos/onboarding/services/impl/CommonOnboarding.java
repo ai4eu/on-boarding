@@ -796,7 +796,7 @@ public class CommonOnboarding {
 		}
 	}
 
-	public void generateTOSCA(File localProtobufFile, File localMetadataFile, Metadata metadata, OnboardingNotification onboardingStatus) {
+	public void generateTOSCA(File localProtobufFile, File localMetadataFile, Metadata metadata, OnboardingNotification onboardingStatus) throws AcumosServiceException {
 		logger.debug("Generate TOSCA started");
 		try {
 
@@ -834,7 +834,8 @@ public class CommonOnboarding {
 			logger.error("Fail to generate TOSCA for solution - " + e);
 			// Storage of artifact location references in Common Data
 			// Store-failure
-			throw e;
+			throw new AcumosServiceException(AcumosServiceException.ErrorCode.INTERNAL_SERVER_ERROR,
+					"Fail to generate TOSCA for solution - " + e.getMessage(), e);
 		}
 	}
 
