@@ -1023,7 +1023,6 @@ public class OnboardingController extends CommonOnboarding implements DockerServ
 					logger.debug(
 							"Onboarding is successful for model name: " + mlpSolution.getName() + ", SolutionID: "
 									+ mlpSolution.getSolutionId() + ", Status Code: " + res.getStatusCode());
-					logger.error("returning res");
 					return res;
 				} finally {
 					logger.error("FINALLY in finally");
@@ -1032,7 +1031,6 @@ public class OnboardingController extends CommonOnboarding implements DockerServ
 						UtilityFunction.deleteDirectory(outputFolder);
 
 						if (isSuccess == false) {
-							logger.error("finally success is false");
 							task.setSolutionId(mData.getSolutionId());
 							task.setRevisionId(mData.getRevisionId());
 							task.setStatusCode("FA");
@@ -1045,7 +1043,6 @@ public class OnboardingController extends CommonOnboarding implements DockerServ
 						}
 
 						if (isSuccess == true) {
-							logger.error("finally success is true");
 							MDC.put(OnboardingLogConstants.MDCs.RESPONSE_STATUS_CODE, OnboardingLogConstants.ResponseStatus.COMPLETED.name());
 							MDC.put(OnboardingLogConstants.MDCs.RESPONSE_DESCRIPTION, "Advanced Model Onboarding Completed");
 							MDC.put(OnboardingLogConstants.MDCs.RESPONSE_CODE, HttpStatus.CREATED.toString());
@@ -1082,7 +1079,6 @@ public class OnboardingController extends CommonOnboarding implements DockerServ
 						UtilityFunction.deleteDirectory(file);
 						logThread.unset();
 						mData = null;
-						logger.error("finally leaving without exception");
 					} catch (AcumosServiceException e) {
 						MDC.put(OnboardingLogConstants.MDCs.RESPONSE_STATUS_CODE, OnboardingLogConstants.ResponseStatus.ERROR.name());
 						MDC.put(OnboardingLogConstants.MDCs.RESPONSE_DESCRIPTION, HttpStatus.INTERNAL_SERVER_ERROR.toString());
@@ -1095,7 +1091,6 @@ public class OnboardingController extends CommonOnboarding implements DockerServ
 					}
 				}
 			} else {
-				logger.error("leaving from else");
 				try {
 					MDC.put(OnboardingLogConstants.MDCs.RESPONSE_STATUS_CODE, OnboardingLogConstants.ResponseStatus.ERROR.name());
 					MDC.put(OnboardingLogConstants.MDCs.RESPONSE_DESCRIPTION, "Either Username/Password is invalid.");
@@ -1108,6 +1103,8 @@ public class OnboardingController extends CommonOnboarding implements DockerServ
 							ServiceResponse.errorResponse(e.getErrorCode(), e.getMessage()), HttpStatus.UNAUTHORIZED);
 				}
 			}
+
+			logger.error("leaving without exception");
 
 		} catch (AcumosServiceException e) {
 			logger.error("leaving with acumos service exception");
