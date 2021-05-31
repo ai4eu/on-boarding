@@ -211,6 +211,9 @@ public class ProtobufGeneratorService {
 				listOfInputMessages = constructInputMessage(inputParameterString);
 				listOfOputPutMessages = constructOutputMessage(outPutParameterString);
 
+				// protobuf requires 1 parameter in+out -> we always have 1 element in the list
+				operation.setInputStream(listOfInputMessages[0].getStream());
+				operation.setOutputStream(listOfOutputMessages[0].getStream());
 				operation.setListOfInputMessages(listOfInputMessages);
 				operation.setListOfOutputMessages(listOfOputPutMessages);
 				if (service.getListOfOperations() != null && !service.getListOfOperations().isEmpty()) {
@@ -357,11 +360,11 @@ public class ProtobufGeneratorService {
 				// handle stream input
 				String[] parts = inPutParameterArray[i].split("[  \\t]+");
 				if (parts.length == 1) {
-					inputMessage.setInputStream(false);
+					inputMessage.setStream(false);
 					inputMessage.setInputMessageName(parts[0]);
 				} else {
 					if (parts.length == 2 && parts[0] == "stream") {
-						inputMessage.setInputStream(true);
+						inputMessage.setStream(true);
 						inputMessage.setInputMessageName(parts[1]);
 					} else {
 						throw new ServiceException("service operation has invalid input parameter '"+inPutParamArray[i]+"'");
@@ -393,11 +396,11 @@ public class ProtobufGeneratorService {
 				// handle stream output
 				String[] parts = outPutParameterArray[i].split("[  \\t]+");
 				if (parts.length == 1) {
-					outputMessage.setOutputStream(false);
+					outputMessage.setStream(false);
 					outputMessage.setOutPutMessageName(parts[0]);
 				} else {
 					if (parts.length == 2 && parts[0] == "stream") {
-						outputMessage.setOutputStream(true);
+						outputMessage.setStream(true);
 						outputMessage.setOutPutMessageName(parts[1]);
 					} else {
 						throw new ServiceException("service operation has invalid output parameter '"+inPutParamArray[i]+"'", ServiceException.TOSCA_FILE_GENERATION_ERROR_CODE, ServiceException.TOSCA_FILE_GENERATION_ERROR_DESC);
