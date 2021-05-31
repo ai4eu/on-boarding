@@ -186,6 +186,8 @@ public class ProtobufGeneratorService {
 
 			if (line.startsWith("service")) {
 				logger.debug("constructService() started");
+				if (service != null)
+					throw new ServiceException("can only process one service, got "+line);
 				service = new org.acumos.designstudio.toscagenerator.vo.protobuf.Service();
 				service = constructService(line, service);
 
@@ -346,9 +348,25 @@ public class ProtobufGeneratorService {
 		try {
 
 			String[] inPutParameterArray = inputParameterString.split(",");
+			if (inPutParameterArray.length != 1) {
+				throw new ServiceException("operation needs exactly one input parameter, found '"+inPutParameterString+"'");
 			for (int i = 0; i < inPutParameterArray.length; i++) {
 				InputMessage inputMessage = new InputMessage();
-				inputMessage.setInputMessageName(inPutParameterArray[i]);
+
+				// handle stream input
+				String[] parts = inPutParameterArray[i].split("[  \\t]+");
+				if (parts.length == 1) {
+					inputMessage.setInputStream(false);
+					inputMessage.setInputMessageName(parts[0]);
+				} else {
+					if (parts.length == 2 && parts[0] == "stream") {
+						inputMessage.setInputStream(true);
+						inputMessage.setInputMessageName(parts[1]);
+					} else {
+						throw new ServiceException("service operation has invalid input parameter '"+inPutParamArray[i]+"'");
+					}
+				}
+
 				listOfInputMessages.add(inputMessage);
 				listOfInputAndOutputMessage.add(inputMessage.getInputMessageName());
 			}
@@ -365,9 +383,25 @@ public class ProtobufGeneratorService {
 		listOfOputPutMessages = new ArrayList<OutputMessage>();
 		try {
 			String[] outPutParameterArray = outPutParameterString.split(",");
+			if (outPutParameterArray.length != 1) {
+				throw new ServiceException("operation needs exactly one output parameter, found '"+outPutParameterString+"'");
 			for (int i = 0; i < outPutParameterArray.length; i++) {
 				OutputMessage outputMessage = new OutputMessage();
-				outputMessage.setOutPutMessageName(outPutParameterArray[i]);
+
+				// handle stream output
+				String[] parts = outPutParameterArray[i].split("[  \\t]+");
+				if (parts.length == 1) {
+					outputMessage.setOutputStream(false);
+					outputMessage.setOutPutMessageName(parts[0]);
+				} else {
+					if (parts.length == 2 && parts[0] == "stream") {
+						outputMessage.setOutputStream(true);
+						outputMessage.setOutPutMessageName(parts[1]);
+					} else {
+						throw new ServiceException("service operation has invalid output parameter '"+inPutParamArray[i]+"'");
+					}
+				}
+
 				listOfOputPutMessages.add(outputMessage);
 				listOfInputAndOutputMessage.add(outputMessage.getOutPutMessageName());
 			}
