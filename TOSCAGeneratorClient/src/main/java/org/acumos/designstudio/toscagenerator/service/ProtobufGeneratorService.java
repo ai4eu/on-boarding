@@ -187,7 +187,7 @@ public class ProtobufGeneratorService {
 			if (line.startsWith("service")) {
 				logger.debug("constructService() started");
 				if (service != null)
-					throw new ServiceException("can only process one service, got "+line);
+					throw new ServiceException("can only process one service, got "+line, ServiceException.TOSCA_FILE_GENERATION_ERROR_CODE, ServiceException.TOSCA_FILE_GENERATION_ERROR_DESC);
 				service = new org.acumos.designstudio.toscagenerator.vo.protobuf.Service();
 				service = constructService(line, service);
 
@@ -349,7 +349,8 @@ public class ProtobufGeneratorService {
 
 			String[] inPutParameterArray = inputParameterString.split(",");
 			if (inPutParameterArray.length != 1) {
-				throw new ServiceException("operation needs exactly one input parameter, found '"+inPutParameterString+"'");
+				throw new ServiceException("operation needs exactly one input parameter, found '"+inputParameterString+"'");
+			}
 			for (int i = 0; i < inPutParameterArray.length; i++) {
 				InputMessage inputMessage = new InputMessage();
 
@@ -384,7 +385,8 @@ public class ProtobufGeneratorService {
 		try {
 			String[] outPutParameterArray = outPutParameterString.split(",");
 			if (outPutParameterArray.length != 1) {
-				throw new ServiceException("operation needs exactly one output parameter, found '"+outPutParameterString+"'");
+				throw new ServiceException("operation needs exactly one output parameter, found '"+outPutParameterString+"'", ServiceException.TOSCA_FILE_GENERATION_ERROR_CODE, ServiceException.TOSCA_FILE_GENERATION_ERROR_DESC);
+			}
 			for (int i = 0; i < outPutParameterArray.length; i++) {
 				OutputMessage outputMessage = new OutputMessage();
 
@@ -398,7 +400,7 @@ public class ProtobufGeneratorService {
 						outputMessage.setOutputStream(true);
 						outputMessage.setOutPutMessageName(parts[1]);
 					} else {
-						throw new ServiceException("service operation has invalid output parameter '"+inPutParamArray[i]+"'");
+						throw new ServiceException("service operation has invalid output parameter '"+inPutParamArray[i]+"'", ServiceException.TOSCA_FILE_GENERATION_ERROR_CODE, ServiceException.TOSCA_FILE_GENERATION_ERROR_DESC);
 					}
 				}
 
