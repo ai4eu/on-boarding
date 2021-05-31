@@ -179,6 +179,7 @@ public class ToscaGeneratorClient {
 		} catch (AcumosException e) {
 			logger.error("Exception in  TOSCA Model Generator Client", e);
 			result = String.format(error, e.getErrorCode(), e.getErrorDesc());
+			throw e;
 
 		} catch (Exception e) {
 			logger.error(" Exception in  TOSCA Model Generator Client ", e);
