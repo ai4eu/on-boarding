@@ -424,7 +424,10 @@ public class ProtobufGeneratorService {
 		protoBufClass = mapper.readValue(protoBufToJsonString, ProtoBufClass.class);
 
 		Service service = protoBufClass.getService();
-		List<Operation> listOfOperations = service.getListOfOperations();
+		List<Operation> listOfOperations = new ArrayList<Operation>();
+		if (service != null) {
+			listOfOperations = service.getListOfOperations();
+		}
 		List<InputMessage> inputMessages = null;
 		String inputMessageName = null;
 
@@ -493,7 +496,10 @@ public class ProtobufGeneratorService {
 			List<MessageargumentList> messageargumentList = new ArrayList<MessageargumentList>();
 			MessageargumentList msgArgument = null;
 			String sourceMsgArgumentType = null;
-			List<MessageargumentList> sourceMessageargumentList = sourceMessage.getMessageargumentList();
+			List<MessageargumentList> sourceMessageargumentList = new ArrayList<MessageargumentList>();
+			if (sourceMessage.getMessageargumentList() != null) {
+				sourceMessageargumentList = sourceMessage.getMessageargumentList();
+			}
 			ComplexType complexType = null;
 
 			for (MessageargumentList sourceMsgArgument : sourceMessageargumentList) {
