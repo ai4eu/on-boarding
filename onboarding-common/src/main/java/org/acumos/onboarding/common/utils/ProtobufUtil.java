@@ -31,8 +31,11 @@ import org.acumos.onboarding.common.proto.ProtobufOption;
 import org.acumos.onboarding.common.proto.ProtobufService;
 import org.acumos.onboarding.common.proto.ProtobufServiceOperation;
 
-
-
+public class ProtobufParseException: public RuntimeException {
+	public ProtobufParseException(String message) {
+		super(message);
+	}
+}
 
 public class ProtobufUtil {
 	
@@ -75,11 +78,15 @@ public class ProtobufUtil {
 				  protobuf.getMessages().add(message);
 			  }
 		  } else {
-			  if(line.startsWith("service") && !serviceDone){
-				   serviceBegin = true; 
-				   serviceStr = new StringBuilder();
-				   serviceStr.append(line);
-				   serviceStr.append("\n");
+			  if(line.startsWith("service")) {
+				  if(!serviceDone){
+					serviceBegin = true; 
+					serviceStr = new StringBuilder();
+					serviceStr.append(line);
+					serviceStr.append("\n");
+				  } else {
+					throw new ProtobufParseException("Duplicate service definition: ignoring '"+line+"'");
+				  }
 			  }
 			  
 			  if(line.startsWith("message")){
@@ -221,13 +228,39 @@ public class ProtobufUtil {
 		String[] outputParamArray = outputParameterString.split(",");
 		int inputParamSize = inputParamArray.length;
 		int outputParamSize = outputParamArray.length;
+		if (inputParamSize != 1) {
+			throw new ProtobufParseException("service operation '"+operationName+"' needs exactly one input parameter, found '"+inputParameterString+"'");
+		if (outputParamSize != 1) {
+			throw new ProtobufParseException("service operation '"+operationName+"' needs exactly one output parameter, found '"+outputParameterString+"'");
 		List<String> inputParamList = new ArrayList<String>();
 		List<String> outputParamList = new ArrayList<String>();
 		for(int i =0 ; i < inputParamSize ; i++ ){
-			inputParamList.add(inputParamArray[i].trim());
+			String[] parts = inputParamArray[i].trim().split("[ \\t]+");
+			if (parts.length == 1) {
+				operation.setInputStream(false);
+				inputParamList.add(parts[0]);
+			} else {
+				if (parts.length == 2 && parts[0] == "stream") {
+					operation.setInputStream(true);
+					inputParamList.add(parts[0]);
+				} else {
+					throw new ProtobufParseException("service operation '"+operationName+"' has invalid input parameter '"+inputParamArray[i].trim()+"'");
+				}
+			}
 		}
 		for(int i =0 ; i < outputParamSize ; i++ ){
-			outputParamList.add(outputParamArray[i].trim());
+			String[] parts = outputParamArray[i].split("[ \\t]+");
+			if (parts.length == 1) {
+				operation.setOutputStream(false);
+				outputParamList.add(parts[0]);
+			} else {
+				if (parts.length == 2 && parts[0] == "stream") {
+					operation.setOutputStream(true);
+					outputParamList.add(parts[0]);
+				} else {
+					throw new ProtobufParseException("service operation '"+operationName+"' has invalid output parameter '"+outputParamArray[i].trim()+"'");
+				}
+			}
 		}
 		operation.setName(operationName);
 		operation.setType(operationType);
