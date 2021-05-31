@@ -957,7 +957,6 @@ public class OnboardingController extends CommonOnboarding implements DockerServ
 					if(protobuf != null && !protobuf.isEmpty()) {
 						generateTOSCA(localProtobufFile, null, mData, onboardingStatus);
 					}
-					logger.error("after generateTOSCA");
 
 					// Notify TOSCA generation successful
 					if (onboardingStatus != null) {
@@ -1025,7 +1024,6 @@ public class OnboardingController extends CommonOnboarding implements DockerServ
 									+ mlpSolution.getSolutionId() + ", Status Code: " + res.getStatusCode());
 					return res;
 				} finally {
-					logger.error("FINALLY in finally");
 
 					try {
 						UtilityFunction.deleteDirectory(outputFolder);
@@ -1104,10 +1102,7 @@ public class OnboardingController extends CommonOnboarding implements DockerServ
 				}
 			}
 
-			logger.error("leaving without exception");
-
 		} catch (AcumosServiceException e) {
-			logger.error("leaving with acumos service exception");
 
 			HttpStatus httpCode = HttpStatus.INTERNAL_SERVER_ERROR;
 			MDC.put(OnboardingLogConstants.MDCs.RESPONSE_STATUS_CODE, OnboardingLogConstants.ResponseStatus.ERROR.name());
@@ -1120,8 +1115,6 @@ public class OnboardingController extends CommonOnboarding implements DockerServ
 			return new ResponseEntity<ServiceResponse>(
 					ServiceResponse.errorResponse(e.getErrorCode(), e.getMessage(), modelName), httpCode);
 		} catch (HttpClientErrorException e) {
-			logger.error("leaving with httpclient error exception");
-
 			// Handling #401 and 400(BAD_REQUEST) is added as CDS throws 400 if apitoken is
 			// invalid.
 			MDC.put(OnboardingLogConstants.MDCs.RESPONSE_STATUS_CODE, OnboardingLogConstants.ResponseStatus.ERROR.name());
@@ -1141,8 +1134,6 @@ public class OnboardingController extends CommonOnboarding implements DockerServ
 						e.getStatusCode());
 			}
 		} catch (Exception e) {
-			logger.error("leaving with exception");
-
 			MDC.put(OnboardingLogConstants.MDCs.RESPONSE_STATUS_CODE, OnboardingLogConstants.ResponseStatus.ERROR.name());
 			MDC.put(OnboardingLogConstants.MDCs.RESPONSE_DESCRIPTION, HttpStatus.INTERNAL_SERVER_ERROR.toString());
 			MDC.put(OnboardingLogConstants.MDCs.RESPONSE_CODE, HttpStatus.INTERNAL_SERVER_ERROR.toString());
