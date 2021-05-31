@@ -56,7 +56,7 @@ import org.acumos.onboarding.common.proto.RevisionListDateComaparator;
 import org.acumos.onboarding.common.utils.JsonResponse;
 import org.acumos.onboarding.common.utils.LogBean;
 import org.acumos.onboarding.common.utils.LoggerDelegate;
-import org.acumos.onboarding.common.utils.ProtobufUtil;
+//import org.acumos.onboarding.common.utils.ProtobufUtil;
 import org.acumos.onboarding.common.utils.ResourceUtils;
 import org.acumos.onboarding.common.utils.UtilityFunction;
 import org.acumos.onboarding.component.docker.preparation.Metadata;
