@@ -97,6 +97,7 @@ public class ProtobufGeneratorService {
 		listOfOption = new ArrayList<Option>();
 		BufferedReader br = null;
 		FileReader fr = null;
+		service = null;
 		String protoBufToJsonString = "";
 		try {
 			fr = new FileReader(localMetadataFile);
@@ -212,8 +213,8 @@ public class ProtobufGeneratorService {
 				listOfOputPutMessages = constructOutputMessage(outPutParameterString);
 
 				// protobuf requires 1 parameter in+out -> we always have 1 element in the list
-				operation.setInputStream(listOfInputMessages[0].getStream());
-				operation.setOutputStream(listOfOutputMessages[0].getStream());
+				operation.setInputStream(listOfInputMessages.get(0).getStream());
+				operation.setOutputStream(listOfOputPutMessages.get(0).getStream());
 				operation.setListOfInputMessages(listOfInputMessages);
 				operation.setListOfOutputMessages(listOfOputPutMessages);
 				if (service.getListOfOperations() != null && !service.getListOfOperations().isEmpty()) {
@@ -352,7 +353,7 @@ public class ProtobufGeneratorService {
 
 			String[] inPutParameterArray = inputParameterString.split(",");
 			if (inPutParameterArray.length != 1) {
-				throw new ServiceException("operation needs exactly one input parameter, found '"+inputParameterString+"'");
+				throw new ServiceException("operation needs exactly one input parameter, found '"+inputParameterString+"'", ServiceException.TOSCA_FILE_GENERATION_ERROR_CODE, ServiceException.TOSCA_FILE_GENERATION_ERROR_DESC);
 			}
 			for (int i = 0; i < inPutParameterArray.length; i++) {
 				InputMessage inputMessage = new InputMessage();
@@ -367,7 +368,7 @@ public class ProtobufGeneratorService {
 						inputMessage.setStream(true);
 						inputMessage.setInputMessageName(parts[1]);
 					} else {
-						throw new ServiceException("service operation has invalid input parameter '"+inPutParamArray[i]+"'");
+						throw new ServiceException("service operation has invalid input parameter '"+inPutParameterArray[i]+"'", ServiceException.TOSCA_FILE_GENERATION_ERROR_CODE, ServiceException.TOSCA_FILE_GENERATION_ERROR_DESC);
 					}
 				}
 
@@ -403,7 +404,7 @@ public class ProtobufGeneratorService {
 						outputMessage.setStream(true);
 						outputMessage.setOutPutMessageName(parts[1]);
 					} else {
-						throw new ServiceException("service operation has invalid output parameter '"+inPutParamArray[i]+"'", ServiceException.TOSCA_FILE_GENERATION_ERROR_CODE, ServiceException.TOSCA_FILE_GENERATION_ERROR_DESC);
+						throw new ServiceException("service operation has invalid output parameter '"+outPutParameterArray[i]+"'", ServiceException.TOSCA_FILE_GENERATION_ERROR_CODE, ServiceException.TOSCA_FILE_GENERATION_ERROR_DESC);
 					}
 				}
 
