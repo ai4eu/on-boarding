@@ -20,10 +20,7 @@
 
 package org.acumos.designstudio.toscagenerator.service;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -95,15 +92,12 @@ public class ProtobufGeneratorService {
 		messageBodyList = new ArrayList<MessageBody>();
 		listOfInputAndOutputMessage = new ArrayList<String>();
 		listOfOption = new ArrayList<Option>();
-		BufferedReader br = null;
-		FileReader fr = null;
 		String protoBufToJsonString = "";
 		try {
-			fr = new FileReader(localMetadataFile);
-			br = new BufferedReader(fr);
-			String sCurrentLine;
-			while ((sCurrentLine = br.readLine()) != null) {
-				parseLine(sCurrentLine.replace("\t", ""));
+			parseFile(localMetadataFile);
+			// do not add utility interfaces to utility nodes
+			if(!service.getName().equalsIgnoreCase("SharedFolderProvider")) {
+				parseResource("shared-folder.proto");
 			}
 			Gson gson = new Gson();
 			protoBufToJsonString = gson.toJson(protoBufClass);
@@ -131,20 +125,26 @@ public class ProtobufGeneratorService {
 			logger.error(
 					"Exception Occured  CreateProtoJson() when Reading the protobuf file and generating protobuf json",
 					ex);
-
-		} finally {
-			try {
-				if (br != null)
-					br.close();
-				if (fr != null)
-					fr.close();
-			} catch (IOException ex) {
-				logger.error(
-						"Exception Occured  CreateProtoJson() when Reading the protobuf file and generating protobuf json",
-						ex);
-			}
 		}
 		return protoBufToJsonString;
+	}
+
+	private void parseFile(File protoFile) throws Exception {
+		try(BufferedReader br=new BufferedReader(new FileReader(protoFile))) {
+			String sCurrentLine;
+			while ((sCurrentLine = br.readLine()) != null) {
+				parseLine(sCurrentLine.replace("\t", ""));
+			}
+		}
+	}
+
+	private void parseResource(String resource) throws Exception {
+		try(BufferedReader br=new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream(resource)))) {
+			String sCurrentLine;
+			while ((sCurrentLine = br.readLine()) != null) {
+				parseLine(sCurrentLine.replace("\t", ""));
+			}
+		}
 	}
 
 	private void parseLine(String line) throws ServiceException {
@@ -185,8 +185,10 @@ public class ProtobufGeneratorService {
 			}
 
 			if (line.startsWith("service")) {
-				logger.debug("constructService() started");
-				service = new org.acumos.designstudio.toscagenerator.vo.protobuf.Service();
+				// allow multiple service blocks
+				if(service==null) {
+					service = new org.acumos.designstudio.toscagenerator.vo.protobuf.Service();
+				}
 				service = constructService(line, service);
 
 			} else if (isItservice && !line.contains("}") && !line.isEmpty()) {
@@ -326,8 +328,11 @@ public class ProtobufGeneratorService {
 	private org.acumos.designstudio.toscagenerator.vo.protobuf.Service constructService(String line,
 			org.acumos.designstudio.toscagenerator.vo.protobuf.Service service) {
 		try {
-			String[] fields = line.split(" ");
-			service.setName(fields[1]);
+			if(service.getName().isEmpty()) {
+				// we use only the name of the first service block
+				String[] fields = line.split(" ");
+				service.setName(fields[1]);
+			}
 			if (line.contains("}")) {
 				isItservice = false;
 			} else {
@@ -379,7 +384,6 @@ public class ProtobufGeneratorService {
 	}
 
 	private List<MessageBody> constructListOfMessages(String protoBufToJsonString) throws Exception {
-
 		List<MessageBody> listOfMessages = new ArrayList<MessageBody>();
 		MessageBody messageBody = null;
 		ObjectMapper mapper = new ObjectMapper();
@@ -451,7 +455,7 @@ public class ProtobufGeneratorService {
 				break;
 			}
 		}
-		if (null != sourceMessage) {
+		if (null != sourceMessage && sourceMessage.getMessageargumentList() != null) {
 			result = new MessageBody();
 			result.setMessageName(messageName);
 			List<MessageargumentList> messageargumentList = new ArrayList<MessageargumentList>();
