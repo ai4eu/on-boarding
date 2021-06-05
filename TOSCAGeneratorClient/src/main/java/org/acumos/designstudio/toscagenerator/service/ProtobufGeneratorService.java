@@ -97,6 +97,7 @@ public class ProtobufGeneratorService {
 			parseFile(localMetadataFile);
 			// do not add utility interfaces to utility nodes
 			if(!service.getName().equalsIgnoreCase("SharedFolderProvider")) {
+				logger.info("add shared-folder.proto");
 				parseResource("shared-folder.proto");
 			}
 			Gson gson = new Gson();
@@ -106,6 +107,7 @@ public class ProtobufGeneratorService {
 				protoBufClass.setListOfMessages(expendedmessageBodyList);
 				Gson gson1 = new Gson();
 				protoBufToJsonString = gson1.toJson(protoBufClass);
+				logger.info("protoBufToJsonString: "+protoBufToJsonString);
 			} catch (Exception ex) {
 				logger.error("Exception Occured  constructListOfMessages()", ex);
 				ex.printStackTrace();

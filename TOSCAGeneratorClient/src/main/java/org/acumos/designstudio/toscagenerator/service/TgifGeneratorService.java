@@ -123,7 +123,7 @@ public class TgifGeneratorService {
 			jsonString = mapper.writeValueAsString(tgif);
 			jsonString = jsonString.replace("[null]", "[]");
 			jsonString = jsonString.replace("null", "{}");
-			logger.debug("Generated TGIF.json : " + jsonString);
+			logger.info("Generated TGIF.json : " + jsonString);
 			ToscaUtil.writeDataToFile(path, "TGIF", "json", jsonString);
 			result = new Artifact("TGIF", "json", solutionID, version, path, jsonString.length());
 
@@ -173,7 +173,7 @@ public class TgifGeneratorService {
 			jsonString = mapper.writeValueAsString(tgif);
 			jsonString = jsonString.replace("[null]", "[]");
 			jsonString = jsonString.replace("null", "{}");
-			logger.debug("Generated TGIF.json : " + jsonString);
+			logger.info("Generated TGIF.json : " + jsonString);
 			ToscaUtil.writeDataToFile(path, "TGIF", "json", jsonString);
 			result = new Artifact("TGIF", "json", solutionID, version, path, jsonString.length());
 
