@@ -103,7 +103,7 @@ public class TgifGeneratorService {
 	 */
 	public Artifact createTgif(String solutionID, String version, String protobuf, String metaData)
 			throws AcumosException {
-		logger.debug("--------  createTgif() Started ------------");
+		logger.warn("--------  createTgif(106) Started ------------");
 		Artifact result = null;
 		String path = Properties.getTempFolderPath(solutionID, version);
 		JSONParser parser = new JSONParser();
@@ -159,7 +159,7 @@ public class TgifGeneratorService {
 	 */
 	public Artifact createTgif(String solutionID, String version, String protobuf, String solutionName,String description)
 			throws AcumosException {
-		logger.debug("--------  createTgif() Started ------------");
+		logger.warn("--------  createTgif(162) Started ------------");
 		Artifact result = null;
 		String path = Properties.getTempFolderPath(solutionID, version);
 		JSONParser parser = new JSONParser();
@@ -198,7 +198,7 @@ public class TgifGeneratorService {
 	 * @return
 	 */
 	private Tgif populateTgif(String version, String solutionName, String description, JSONObject protobufJson) {
-		logger.debug("--------  populateTgif() Begin ------------");
+		logger.warn("--------  populateTgif(201) Begin ------------");
 
 		String COMPONENT_TYPE = "Docker";
 		// Set Self
@@ -257,6 +257,7 @@ public class TgifGeneratorService {
 	@SuppressWarnings("unchecked")
 	private Provide[] getProvides(JSONObject protobufJson) {
 		JSONObject service = (JSONObject) protobufJson.get("service");
+		logger.warn("XXX getProvides service "+protobufJson.toString();
 		JSONArray listOfOperations = (JSONArray) service.get("listOfOperations");
 		JSONArray listOfMessages = (JSONArray) protobufJson.get("listOfMessages");
 
@@ -311,6 +312,7 @@ public class TgifGeneratorService {
 	@SuppressWarnings("unchecked")
 	private Call[] getCalls(JSONObject protobufJson) {
 
+		logger.warn("XXX getCalls service "+protobufJson.toString();
 		JSONObject service = (JSONObject) protobufJson.get("service");
 		JSONArray listOfOperations = (JSONArray) service.get("listOfOperations");
 		JSONArray listOfMessages = (JSONArray) protobufJson.get("listOfMessages");

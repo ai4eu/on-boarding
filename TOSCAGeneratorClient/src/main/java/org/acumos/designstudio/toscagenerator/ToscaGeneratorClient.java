@@ -130,7 +130,7 @@ public class ToscaGeneratorClient {
 	public String generateTOSCA(String ownerID, String solutionID, String version, String solutionRevisionID,
 			File localProtobufFile, File localMetadataFile) throws AcumosException {
 
-		logger.info(" generateTOSCA() : Begin");
+		logger.warn(" generateTOSCA(133) : Begin");
 		String result = null;
 		String success = "{solutionID:\"%s\",version:\"%s\"}";
 		String error = "{errorCode : \"%s\", errorDescription : \"%s\"}";
@@ -222,7 +222,7 @@ public class ToscaGeneratorClient {
 	public String generateTOSCA(String ownerID, String solutionID, String version, String solutionRevisionID,
 			File localProtobufFile, String solutionName, String description) throws AcumosException {
 
-		logger.info(" generateTOSCA() : Begin");
+		logger.warn(" generateTOSCA(225) : Begin");
 		String result = null;
 		String success = "{solutionID:\"%s\",version:\"%s\"}";
 		String error = "{errorCode : \"%s\", errorDescription : \"%s\"}";
