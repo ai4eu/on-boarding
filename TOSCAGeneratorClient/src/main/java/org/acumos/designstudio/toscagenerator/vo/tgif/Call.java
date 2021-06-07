@@ -27,12 +27,15 @@ public class Call implements Serializable{
 	private static final long serialVersionUID = 2155426559340261877L;
 	
 	private String config_key;
+	private boolean inputStream;
+	private boolean outputStream;
 	private Request request;
 	private Response response;
 	
 	
 	public Call(){
-		
+		inputStream = false;
+		outputStream = false;
 	}
 	
 	/**
@@ -44,11 +47,13 @@ public class Call implements Serializable{
 	 * @param response
 	 * 			response
 	 */
-	public Call(String config_key, Request request, Response response) {
+	public Call(String config_key, Request request, Response response, boolean isInputStream, boolean isOutputStream) {
 		super();
 		this.config_key = config_key;
 		this.request = request;
 		this.response = response;
+		this.inputStream = isInputStream;
+		this.outputStream = isOutputStream;
 	}
 	/**
 	 * @return the config_key
@@ -87,8 +92,11 @@ public class Call implements Serializable{
 		this.response = response;
 	}
 	
-	
-	
-	
-	
+	public boolean isInputStream() {
+		return inputStream;
+	}
+
+	public boolean isOutputStream() {
+		return outputStream;
+	}
 }

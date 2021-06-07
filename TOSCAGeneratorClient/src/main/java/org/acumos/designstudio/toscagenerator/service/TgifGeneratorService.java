@@ -335,12 +335,16 @@ public class TgifGeneratorService {
 		Request request = null;
 		Response response = null;
 		Call call = null;
+		boolean isInputStream = false;
+		boolean isOutputStream = false;
 		@SuppressWarnings("unused")
 		int outputMsgCnt = 0;
 
 		while (itr.hasNext()) {
 			operation = itr.next();
 			operationName = operation.get("operationName").toString();
+			isInputStream = operation.get("inputStream");
+			isOutputStream = operation.get("outputStream");
 			// Construct the format : for each output Message get the message name and then
 			// get collect the message details
 			listOfOutputMessages = (JSONArray) operation.get("listOfOutputMessages");
@@ -354,7 +358,7 @@ public class TgifGeneratorService {
 			}
 			request = new Request(outputMsgJsonArray, "");
 			response = new Response(new JSONArray(), "");
-			call = new Call(operationName, request, response);
+			call = new Call(operationName, request, response, isInputStream, isOutputStream);
 			result[operationCnt] = call;
 			operationCnt++;
 		}
