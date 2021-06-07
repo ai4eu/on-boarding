@@ -257,7 +257,7 @@ public class TgifGeneratorService {
 	@SuppressWarnings("unchecked")
 	private Provide[] getProvides(JSONObject protobufJson) {
 		JSONObject service = (JSONObject) protobufJson.get("service");
-		logger.warn("XXX getProvides service "+protobufJson.toString();
+		logger.warn("XXX getProvides service "+protobufJson.toString());
 		JSONArray listOfOperations = (JSONArray) service.get("listOfOperations");
 		JSONArray listOfMessages = (JSONArray) protobufJson.get("listOfMessages");
 
@@ -312,7 +312,7 @@ public class TgifGeneratorService {
 	@SuppressWarnings("unchecked")
 	private Call[] getCalls(JSONObject protobufJson) {
 
-		logger.warn("XXX getCalls service "+protobufJson.toString();
+		logger.warn("XXX getCalls service "+protobufJson.toString());
 		JSONObject service = (JSONObject) protobufJson.get("service");
 		JSONArray listOfOperations = (JSONArray) service.get("listOfOperations");
 		JSONArray listOfMessages = (JSONArray) protobufJson.get("listOfMessages");
