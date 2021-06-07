@@ -298,7 +298,7 @@ public class TgifGeneratorService {
 				stream = Boolean.parseBoolean(inputMessage.get("stream").toString());
 			}
 			request = new Request(inputMsgJsonArray, "", stream);
-			response = new Response(new JSONArray(), "");
+			response = new Response(new JSONArray(), "", false);
 			provide = new Provide(operationName, request, response);
 			result[operationCnt] = provide;
 			operationCnt++;
@@ -359,7 +359,7 @@ public class TgifGeneratorService {
 				stream = Boolean.parseBoolean(outputMessage.get("stream").toString());
 			}
 			request = new Request(outputMsgJsonArray, "", stream);
-			response = new Response(new JSONArray(), ""); // empty
+			response = new Response(new JSONArray(), "", false); // empty
 			call = new Call(operationName, request, response);
 			result[operationCnt] = call;
 			operationCnt++;
