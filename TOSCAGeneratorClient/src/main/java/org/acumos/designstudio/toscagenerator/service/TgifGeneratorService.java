@@ -343,8 +343,8 @@ public class TgifGeneratorService {
 		while (itr.hasNext()) {
 			operation = itr.next();
 			operationName = operation.get("operationName").toString();
-			isInputStream = operation.get("inputStream");
-			isOutputStream = operation.get("outputStream");
+			isInputStream = Boolean.parseBoolean(operation.get("inputStream").toString());
+			isOutputStream = Boolean.parseBoolean(operation.get("outputStream").toString());
 			// Construct the format : for each output Message get the message name and then
 			// get collect the message details
 			listOfOutputMessages = (JSONArray) operation.get("listOfOutputMessages");
