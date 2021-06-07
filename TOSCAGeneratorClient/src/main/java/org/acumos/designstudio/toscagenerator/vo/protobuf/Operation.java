@@ -28,8 +28,8 @@ public class Operation implements Serializable{
 	private static final long serialVersionUID = 6913785969226335666L;
 	private String operationType = "";
 	private String operationName = "";
-	private boolean inputStream;
-	private boolean outputStream;
+	private boolean inputStream; // TODO remove?
+	private boolean outputStream; // TODO remove?
 	private List<InputMessage> listOfInputMessages;
 	private List<OutputMessage> listOfOutputMessages;	
 	

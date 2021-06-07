@@ -28,11 +28,12 @@ public class Response implements Serializable {
 
 	private static final long serialVersionUID = 7215402687596230670L;
 
+	private boolean streaming;
 	private JSONArray format;
 	private String version;
 
 	public Response() {
-
+		streaming = false;
 	}
 
 	/**
@@ -46,6 +47,7 @@ public class Response implements Serializable {
 		super();
 		this.format = format;
 		this.version = version;
+		this.streaming = isStreaming;
 	}
 
 	/**
@@ -78,4 +80,7 @@ public class Response implements Serializable {
 		this.version = version;
 	}
 
+	public boolean isStreaming() {
+		return this.streaming;
+	}
 }
