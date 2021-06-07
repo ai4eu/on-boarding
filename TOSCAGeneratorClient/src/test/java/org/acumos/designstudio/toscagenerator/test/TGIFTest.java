@@ -190,7 +190,7 @@ public class TGIFTest {
 		call.getResponse();
 		Call[] callList = { call };
 		
-		Call call1 = new Call("ConfigKey", request, response, false, false);
+		Call call1 = new Call("ConfigKey", request, response);
 		return callList;
 	}
 
