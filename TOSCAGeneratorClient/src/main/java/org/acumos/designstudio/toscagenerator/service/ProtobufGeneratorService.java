@@ -399,7 +399,10 @@ public class ProtobufGeneratorService {
 		protoBufClass = mapper.readValue(protoBufToJsonString, ProtoBufClass.class);
 
 		Service service = protoBufClass.getService();
-		List<Operation> listOfOperations = service.getListOfOperations();
+		List<Operation> listOfOperations = new ArrayList<Operation>();
+		if (service != null) {
+			listOfOperations = service.getListOfOperations();
+		}
 		List<InputMessage> inputMessages = null;
 		String inputMessageName = null;
 
