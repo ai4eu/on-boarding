@@ -276,6 +276,7 @@ public class TgifGeneratorService {
 
 		Request request = null;
 		Response response = null;
+		boolean stream = false;
 		Provide provide = null;
 		@SuppressWarnings("unused")
 		int inputMsgCnt = 0;
@@ -293,8 +294,10 @@ public class TgifGeneratorService {
 				inputMessage = (JSONObject) inputMsgItr.next();
 				inputMsgName = (String) inputMessage.get("inputMessageName");
 				inputMsgJsonArray.add(getMsgJson(inputMsgName, listOfMessages));
+				// we have only one message anyways
+				stream = Boolean.parseBoolean(inputMessage.get("stream").toString());
 			}
-			request = new Request(inputMsgJsonArray, "");
+			request = new Request(inputMsgJsonArray, "", stream);
 			response = new Response(new JSONArray(), "");
 			provide = new Provide(operationName, request, response);
 			result[operationCnt] = provide;
@@ -334,6 +337,7 @@ public class TgifGeneratorService {
 
 		Request request = null;
 		Response response = null;
+		boolean stream = false;
 		Call call = null;
 		@SuppressWarnings("unused")
 		int outputMsgCnt = 0;
@@ -351,8 +355,10 @@ public class TgifGeneratorService {
 				outputMessage = (JSONObject) outputMsgItr.next();
 				outputMsgName = (String) outputMessage.get("outPutMessageName");
 				outputMsgJsonArray.add(getMsgJson(outputMsgName, listOfMessages));
+				// we have only one message anyways
+				stream = Boolean.parseBoolean(outputMessage.get("stream").toString());
 			}
-			request = new Request(outputMsgJsonArray, "");
+			request = new Request(outputMsgJsonArray, "", stream);
 			response = new Response(new JSONArray(), "");
 			call = new Call(operationName, request, response);
 			result[operationCnt] = call;

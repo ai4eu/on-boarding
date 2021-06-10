@@ -215,6 +215,9 @@ public class ProtobufGeneratorService {
 				listOfInputMessages = constructInputMessage(inputParameterString);
 				listOfOputPutMessages = constructOutputMessage(outPutParameterString);
 
+				// protobuf requires 1 parameter in+out -> we always have 1 element in the list
+				operation.setInputStream(listOfInputMessages.get(0).getStream());
+				operation.setOutputStream(listOfOputPutMessages.get(0).getStream());
 				operation.setListOfInputMessages(listOfInputMessages);
 				operation.setListOfOutputMessages(listOfOputPutMessages);
 				if (service.getListOfOperations() != null && !service.getListOfOperations().isEmpty()) {
@@ -352,39 +355,66 @@ public class ProtobufGeneratorService {
 
 	}
 
-	private List<InputMessage> constructInputMessage(String inputParameterString) {
+	private List<InputMessage> constructInputMessage(String inputParameterString) throws ServiceException {
 		logger.debug("constructInputMessage() strated");
 		listOfInputMessages = new ArrayList<InputMessage>();
-		try {
 
-			String[] inPutParameterArray = inputParameterString.split(",");
-			for (int i = 0; i < inPutParameterArray.length; i++) {
-				InputMessage inputMessage = new InputMessage();
-				inputMessage.setInputMessageName(inPutParameterArray[i]);
-				listOfInputMessages.add(inputMessage);
-				listOfInputAndOutputMessage.add(inputMessage.getInputMessageName());
-			}
-		} catch (Exception ex) {
-			logger.error("Exception Occured  constructInputMessage()", ex);
+		String[] inPutParameterArray = inputParameterString.split(",");
+		if (inPutParameterArray.length != 1) {
+			throw new ServiceException("operation needs exactly one input parameter, found '"+inputParameterString+"'", ServiceException.TOSCA_FILE_GENERATION_ERROR_CODE, ServiceException.TOSCA_FILE_GENERATION_ERROR_DESC);
 		}
+		for (int i = 0; i < inPutParameterArray.length; i++) {
+			InputMessage inputMessage = new InputMessage();
+
+			// handle stream input
+			String[] parts = inPutParameterArray[i].split("[  \\t]+");
+			if (parts.length == 1) {
+				inputMessage.setStream(false);
+				inputMessage.setInputMessageName(parts[0]);
+			} else {
+				if (parts.length == 2 && parts[0].equals("stream")) {
+					inputMessage.setStream(true);
+					inputMessage.setInputMessageName(parts[1]);
+				} else {
+					throw new ServiceException("service operation has invalid input parameter '"+inPutParameterArray[i]+"' parts="+parts.length+" parts[0]="+parts[0], ServiceException.TOSCA_FILE_GENERATION_ERROR_CODE, ServiceException.TOSCA_FILE_GENERATION_ERROR_DESC);
+				}
+			}
+
+			listOfInputMessages.add(inputMessage);
+			listOfInputAndOutputMessage.add(inputMessage.getInputMessageName());
+		}
+
 		logger.debug("constructInputMessage() end");
 		return listOfInputMessages;
 
 	}
 
-	private List<OutputMessage> constructOutputMessage(String outPutParameterString) {
+	private List<OutputMessage> constructOutputMessage(String outPutParameterString) throws ServiceException {
 		logger.debug("constructOutputMessage() strated");
 		listOfOputPutMessages = new ArrayList<OutputMessage>();
-		try {
-			String[] outPutParameterArray = outPutParameterString.split(",");
-			for (int i = 0; i < outPutParameterArray.length; i++) {
-				OutputMessage outputMessage = new OutputMessage();
-				outputMessage.setOutPutMessageName(outPutParameterArray[i]);
-				listOfOputPutMessages.add(outputMessage);
-				listOfInputAndOutputMessage.add(outputMessage.getOutPutMessageName());
+		String[] outPutParameterArray = outPutParameterString.split(",");
+		if (outPutParameterArray.length != 1) {
+			throw new ServiceException("operation needs exactly one output parameter, found '"+outPutParameterString+"'", ServiceException.TOSCA_FILE_GENERATION_ERROR_CODE, ServiceException.TOSCA_FILE_GENERATION_ERROR_DESC);
+		}
+		for (int i = 0; i < outPutParameterArray.length; i++) {
+			OutputMessage outputMessage = new OutputMessage();
+
+			// handle stream output
+			String[] parts = outPutParameterArray[i].split("[  \\t]+");
+			if (parts.length == 1) {
+				outputMessage.setStream(false);
+				outputMessage.setOutPutMessageName(parts[0]);
+			} else {
+				if (parts.length == 2 && parts[0].equals("stream")) {
+					outputMessage.setStream(true);
+					outputMessage.setOutPutMessageName(parts[1]);
+				} else {
+					throw new ServiceException("service operation has invalid output parameter '"+outPutParameterArray[i]+"' parts="+parts.length+" parts[0]="+parts[0], ServiceException.TOSCA_FILE_GENERATION_ERROR_CODE, ServiceException.TOSCA_FILE_GENERATION_ERROR_DESC);
+				}
 			}
-		} catch (Exception ex) {
-			logger.error("constructOutputMessage() end", ex);
+
+			listOfOputPutMessages.add(outputMessage);
+			listOfInputAndOutputMessage.add(outputMessage.getOutPutMessageName());
 		}
 		logger.debug("constructOutputMessage() end");
 		return listOfOputPutMessages;

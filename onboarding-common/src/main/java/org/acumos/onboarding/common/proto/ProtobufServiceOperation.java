@@ -30,8 +30,16 @@ public class ProtobufServiceOperation implements Serializable {
 	
 	private String name;
 	private String type;
+	private boolean inputStream;
+	private boolean outputStream;
 	private List<String> outputMessageNames;
 	private List<String> inputMessageNames;
+
+	public ProtobufServiceOperation() {
+		inputStream = false;
+		outputStream = false;
+	}
+
 	/**
 	 * @return the name
 	 */
@@ -56,6 +64,13 @@ public class ProtobufServiceOperation implements Serializable {
 	public void setType(String type) {
 		this.type = type;
 	}
+
+	public boolean isOutputStream() {
+		return outputStream;
+	}
+	public void setOutputStream(boolean os) {
+		outputStream = os;
+	}
 	/**
 	 * @return the outputMessageNames
 	 */
@@ -67,6 +82,13 @@ public class ProtobufServiceOperation implements Serializable {
 	 */
 	public void setOutputMessageNames(List<String> outputMessageNames) {
 		this.outputMessageNames = outputMessageNames;
+	}
+
+	public boolean isInputStream() {
+		return inputStream;
+	}
+	public void setInputStream(boolean is) {
+		inputStream = is;
 	}
 	/**
 	 * @return the inputMessageNames
@@ -88,12 +110,18 @@ public class ProtobufServiceOperation implements Serializable {
 		StringBuffer sb = new StringBuffer();
 		sb.append(type + " "  + name + "(");
 		for(String s : inputMessageNames){
+			if (inputStream) {
+				sb.append("stream ");
+			}
 			sb.append(s);
 			sb.append(",");
 		}
 		sb.setLength(sb.length()-1);
 		sb.append(") returns (");
 		for(String s : outputMessageNames){
+			if (outputStream) {
+				sb.append("stream ");
+			}
 			sb.append(s);
 			sb.append(",");
 		}

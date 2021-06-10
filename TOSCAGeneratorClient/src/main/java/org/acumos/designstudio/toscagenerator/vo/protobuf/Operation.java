@@ -28,9 +28,16 @@ public class Operation implements Serializable{
 	private static final long serialVersionUID = 6913785969226335666L;
 	private String operationType = "";
 	private String operationName = "";
+	private boolean inputStream; // TODO remove?
+	private boolean outputStream; // TODO remove?
 	private List<InputMessage> listOfInputMessages;
 	private List<OutputMessage> listOfOutputMessages;	
 	
+	public Operation() {
+		inputStream = false;
+		outputStream = false;
+	}
+
     public String getOperationType() {
 		return operationType;
 	}
@@ -43,11 +50,23 @@ public class Operation implements Serializable{
 	public void setOperationName(String operationName) {
 		this.operationName = operationName;
 	}
+	public boolean isInputStream() {
+		return inputStream;
+	}
+	public void setInputStream(boolean is) {
+		inputStream = is;
+	}
 	public List<InputMessage> getListOfInputMessages() {
 		return listOfInputMessages;
 	}
 	public void setListOfInputMessages(List<InputMessage> listOfInputMessages) {
 		this.listOfInputMessages = listOfInputMessages;
+	}
+	public boolean isOutputStream() {
+		return outputStream;
+	}
+	public void setOutputStream(boolean os) {
+		outputStream = os;
 	}
 	public List<OutputMessage> getListOfOutputMessages() {
 		return listOfOutputMessages;
