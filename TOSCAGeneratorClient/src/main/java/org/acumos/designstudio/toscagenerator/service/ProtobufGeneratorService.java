@@ -472,6 +472,10 @@ public class ProtobufGeneratorService {
 			MessageargumentList msgArgument = null;
 			String sourceMsgArgumentType = null;
 			List<MessageargumentList> sourceMessageargumentList = sourceMessage.getMessageargumentList();
+			// List<MessageargumentList> sourceMessageargumentList = new ArrayList<MessageargumentList>();
+			// if (sourceMessage.getMessageargumentList() != null) {
+			// 	sourceMessageargumentList = sourceMessage.getMessageargumentList();
+			// }
 			ComplexType complexType = null;
 
 			for (MessageargumentList sourceMsgArgument : sourceMessageargumentList) {
