@@ -28,7 +28,7 @@ public class Response implements Serializable {
 
 	private static final long serialVersionUID = 7215402687596230670L;
 
-	private boolean streaming;
+	private boolean streaming; // can remove this, this whole class is never used actually
 	private JSONArray format;
 	private String version;
 
