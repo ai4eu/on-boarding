@@ -70,6 +70,7 @@ public class ToscaGeneratorService {
 			throws AcumosException {
 		List<Artifact> toscaFiles = new ArrayList<Artifact>();
 		try {
+			logger.warn("XXX decryptAndWriteTofile "+solutionID+" | "+version+" | "+response);
 			String path = Properties.getTempFolderPath(solutionID, version);
 			JSONParser parser = new JSONParser();
 			Object obj = parser.parse(response);
@@ -136,6 +137,7 @@ public class ToscaGeneratorService {
 		try {
 			if (toscaFiles != null && !toscaFiles.isEmpty()) {
 				for (Artifact a : toscaFiles) {
+					logger.warn("XXX uploadFilesToRepository processing artifact "+a.getName()+" / "+a.getExtension()+" of type "+a.getType()+" and length "+a.getContentLength()+" with payload uri "+a.getPayloadURI());
 
 					// 1. group id ,2. artifact name, 3. version, 4. extension i.e., packaging, 5. size of content, 6. actual file input stream.
 					List<MLPSolutionRevision> mlpSolnRevision = cdmsClient.getSolutionRevisions(solutionID);
@@ -191,6 +193,7 @@ public class ToscaGeneratorService {
 		String json_spec = "{ \"spec\" : " + modelMetaData + "}";
 		StringBuilder sb = null;
 		BufferedReader br = null;
+		logger.warn("XXX getToscaModels "+modelMetaData);
 		// 1. Integrate TOSCA Model Generator Python Web Service
 		try {
 			URL url = new URL(Properties.getToscaGeneratorEndPointURL());
@@ -250,6 +253,7 @@ public class ToscaGeneratorService {
 		MLPArtifact result = null;
 		if (toscaFiles != null && !toscaFiles.isEmpty()) {
 			for (Artifact a : toscaFiles) {
+				logger.warn("XXX postArtifact processing artifact "+a.getName()+" / "+a.getExtension()+" of type "+a.getType()+" and length "+a.getContentLength()+" with payload uri "+a.getPayloadURI());
 				cArtifact = new MLPArtifact();
 				logger.debug("Type : " + a.getType());
 				logger.debug("ArtifactTypeCode : " + Properties.getTOSCATypeCode(a.getType()));
