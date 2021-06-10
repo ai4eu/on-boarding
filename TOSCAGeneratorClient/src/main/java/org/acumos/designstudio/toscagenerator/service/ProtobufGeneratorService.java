@@ -111,6 +111,7 @@ public class ProtobufGeneratorService {
 			} catch (Exception ex) {
 				logger.error("Exception Occured  constructListOfMessages()", ex);
 				ex.printStackTrace();
+				throw ex;
 			}
 			isMessage = false;
 			isItservice = false;
@@ -121,12 +122,13 @@ public class ProtobufGeneratorService {
 			logger.error(
 					"Exception Occured  CreateProtoJson() when Reading the protobuf file and generating protobuf json",
 					ex);
-			throw new ServiceException(ex.getMessage(), ex.getErrorCode(), ex.getErrorDesc(), ex.getCause());
-
+			throw ex;
 		} catch (Exception ex) {
 			logger.error(
 					"Exception Occured  CreateProtoJson() when Reading the protobuf file and generating protobuf json",
 					ex);
+			throw new ServiceException(ex.toString(),
+				ServiceException.TOSCA_FILE_GENERATION_ERROR_CODE, ServiceException.TOSCA_FILE_GENERATION_ERROR_DESC, ex);
 		}
 		return protoBufToJsonString;
 	}
@@ -246,6 +248,7 @@ public class ProtobufGeneratorService {
 			}
 		} catch (Exception ex) {
 			logger.error("Exception Occured  constructSyntax()", ex);
+			throw ex;
 		}
 		logger.debug("constructSyntax() end");
 		return removequotes;
@@ -323,6 +326,7 @@ public class ProtobufGeneratorService {
 			}
 		} catch (Exception ex) {
 			logger.error("Exception Occured  costructMessage()", ex);
+			throw ex;
 		}
 		return messageBody;
 	}
@@ -342,6 +346,7 @@ public class ProtobufGeneratorService {
 			}
 		} catch (Exception ex) {
 			logger.error("Exception Occured  constructService()", ex);
+			throw ex;
 		}
 		return service;
 
