@@ -158,7 +158,7 @@ public class ProtobufGeneratorService {
 				protoBufClass.setSyntax(constructSyntax(line));
 			}
 			// check for package and imports
-			if (line.trim().startsWith("package") || line.trim().startsWith("image") ) {
+			if (line.trim().startsWith("package") || line.trim().startsWith("import") ) {
 				String message="package or import declaration not allowed in proto-files: "+line;
 				logger.error(message);
 				throw new ServiceException(message, Properties.getDecryptionErrorCode(), message);
