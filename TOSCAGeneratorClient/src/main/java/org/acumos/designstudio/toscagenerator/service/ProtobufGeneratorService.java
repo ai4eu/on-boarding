@@ -374,9 +374,11 @@ public class ProtobufGeneratorService {
 			// handle stream input
 			String[] parts = inPutParameterArray[i].split("[  \\t]+");
 			if (parts.length == 1) {
+				logger.warn("XXX constructInputMessage got 1 part '"+parts[0]+"'");
 				inputMessage.setStream(false);
 				inputMessage.setInputMessageName(parts[0]);
 			} else {
+				logger.warn("XXX constructInputMessage got "+parts.length+" parts '"+parts[0]+"' and '"+parts[1]+"'");
 				if (parts.length == 2 && parts[0].equals("stream")) {
 					inputMessage.setStream(true);
 					inputMessage.setInputMessageName(parts[1]);
@@ -407,9 +409,11 @@ public class ProtobufGeneratorService {
 			// handle stream output
 			String[] parts = outPutParameterArray[i].split("[  \\t]+");
 			if (parts.length == 1) {
+				logger.warn("XXX constructOutputMessage got 1 part '"+parts[0]+"'");
 				outputMessage.setStream(false);
 				outputMessage.setOutPutMessageName(parts[0]);
 			} else {
+				logger.warn("XXX constructOutputMessage got "+parts.length+" parts '"+parts[0]+"' and '"+parts[1]+"'");
 				if (parts.length == 2 && parts[0].equals("stream")) {
 					outputMessage.setStream(true);
 					outputMessage.setOutPutMessageName(parts[1]);
