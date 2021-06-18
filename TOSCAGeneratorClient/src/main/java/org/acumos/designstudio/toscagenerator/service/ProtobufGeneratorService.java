@@ -204,11 +204,13 @@ public class ProtobufGeneratorService {
 				String inputParameterString = "";
 				String outPutParameterString = "";
 
-				String line1 = line.split("returns")[0];
+				// line1 is everything before returns
+				String line1 = line.split("returns")[0].trim();
 				operationType = line1.split(" ", 2)[0].trim();
-				String line2 = line1.split(" ", 2)[1].replace(" ", "").replace("(", "%br%").replace(")", "").trim();
-				operationName = line2.split("%br%")[0].trim();
-				inputParameterString = line2.split("%br%")[1].trim();
+				// line2 is operation name and input parameter
+				String line2 = line1.split(" ", 2)[1].replace(")", "").trim();
+				operationName = line2.split("\\(")[0].trim();
+				inputParameterString = line2.split("\\(")[1].trim();
 				outPutParameterString = line.split("returns")[1].replace("(", "").replace(")", "").trim();
 				operation.setOperationType(operationType);
 				operation.setOperationName(operationName);
@@ -216,8 +218,11 @@ public class ProtobufGeneratorService {
 				listOfOputPutMessages = constructOutputMessage(outPutParameterString);
 
 				// protobuf requires 1 parameter in+out -> we always have 1 element in the list
-				operation.setInputStream(listOfInputMessages.get(0).getStream());
-				operation.setOutputStream(listOfOputPutMessages.get(0).getStream());
+				boolean inputStream = listOfInputMessages.get(0).getStream();
+				boolean outputStream = listOfOputPutMessages.get(0).getStream();
+				operation.setInputStream(inputStream);
+				operation.setOutputStream(outputStream);
+				logger.warn("XXX parseLine for "+operationName+" gets inputStream "+inputStream+" and outputStream "+outputStream);
 				operation.setListOfInputMessages(listOfInputMessages);
 				operation.setListOfOutputMessages(listOfOputPutMessages);
 				if (service.getListOfOperations() != null && !service.getListOfOperations().isEmpty()) {

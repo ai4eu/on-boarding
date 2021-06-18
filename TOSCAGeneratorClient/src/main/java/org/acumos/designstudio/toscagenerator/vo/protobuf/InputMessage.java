@@ -29,7 +29,7 @@ public class InputMessage implements Serializable {
 	private boolean stream = false;
 
 	public void setStream(boolean s) {
-	stream = s;
+		this.stream = s;
 	}
 	public boolean getStream() {
 		return stream;
