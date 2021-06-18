@@ -444,6 +444,7 @@ public class ProtobufGeneratorService {
 		List<OutputMessage> outputMessages = null;
 		String outputMessageName = null;
 		for (Operation operation : listOfOperations) {
+			logger.warn("XXX at operation "+operation.getOperationName()+" have setOfMessageNames "+Arrays.toString(setOfMessageNames.toArray()));
 			inputMessages = operation.getListOfInputMessages();
 			for (InputMessage inputmsg : inputMessages) {
 				inputMessageName = inputmsg.getInputMessageName();
