@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
@@ -424,6 +426,7 @@ public class ProtobufGeneratorService {
 
 	private List<MessageBody> constructListOfMessages(String protoBufToJsonString) throws Exception {
 		List<MessageBody> listOfMessages = new ArrayList<MessageBody>();
+		Set<String> setOfMessageNames = new HashSet<String>();
 		MessageBody messageBody = null;
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
@@ -440,38 +443,31 @@ public class ProtobufGeneratorService {
 
 		List<OutputMessage> outputMessages = null;
 		String outputMessageName = null;
-		boolean msgExist = false;
 		for (Operation operation : listOfOperations) {
 			inputMessages = operation.getListOfInputMessages();
 			for (InputMessage inputmsg : inputMessages) {
 				inputMessageName = inputmsg.getInputMessageName();
-				// expanded
-				messageBody = constructExpandedMessageBody(inputMessageName, protoBufClass.getListOfMessages(), "");
-				if (null != messageBody) {
-					listOfMessages.add(messageBody);
-				}
-
-			}
-			outputMessages = operation.getListOfOutputMessages();
-
-			for (OutputMessage outputmsg : outputMessages) {
-				outputMessageName = outputmsg.getOutPutMessageName();
-				for (InputMessage inputmsg : inputMessages) {
-					if (inputmsg.getInputMessageName().equals(outputMessageName)) {
-						msgExist = true;
-						break;
-					}
-				}
-				if (!msgExist) {
-					messageBody = constructExpandedMessageBody(outputMessageName, protoBufClass.getListOfMessages(),
-							"");
+				if (!setOfMessageNames.contains(inputMessageName)) {
+					// expanded
+					messageBody = constructExpandedMessageBody(inputMessageName, protoBufClass.getListOfMessages(), "");
 					if (null != messageBody) {
 						listOfMessages.add(messageBody);
+						setOfMessageNames.add(inputMessageName);
 					}
 				}
-				msgExist = false;
 			}
 
+			outputMessages = operation.getListOfOutputMessages();
+			for (OutputMessage outputmsg : outputMessages) {
+				outputMessageName = outputmsg.getOutPutMessageName();
+				if (!setOfMessageNames.contains(outputMessageName)) {
+					messageBody = constructExpandedMessageBody(outputMessageName, protoBufClass.getListOfMessages(), "");
+					if (null != messageBody) {
+						listOfMessages.add(messageBody);
+						setOfMessageNames.add(outputMessageName);
+					}
+				}
+			}
 		}
 
 		return listOfMessages;
