@@ -176,11 +176,10 @@ public class ProtobufGeneratorService {
 				isMessage = false;
 				messageBody = new MessageBody();
 
-				messageBody = costructMessage(line, messageBody, null);
+				messageBody = costructMessage(line, messageBody);
 
 			} else if (isMessage && !line.contains("}")) {
-				messageargumentList = new ArrayList<MessageargumentList>();
-				messageBody = costructMessage(line, messageBody, messageargumentList);
+				messageBody = costructMessage(line, messageBody);
 			} else if (isMessage && line.contains("}")) {
 				messageBodyList.add(messageBody);
 				protoBufClass.setListOfMessages(messageBodyList);
@@ -287,8 +286,7 @@ public class ProtobufGeneratorService {
 		return "";
 	}
 
-	private MessageBody costructMessage(String line, MessageBody messageBody,
-			List<MessageargumentList> messageargumentList) {
+	private MessageBody costructMessage(String line, MessageBody messageBody) {
 		try {
 			if (line.startsWith("message")) {
 				String[] fields = line.split(" ");
@@ -318,13 +316,8 @@ public class ProtobufGeneratorService {
 						}
 					}
 					SortComparator sortComparator = SortFactory.getComparator();
-					if (messageBody.getMessageargumentList() != null) {
-						messageBody.getMessageargumentList().add(messageargumentListInstance);
-						Collections.sort(messageBody.getMessageargumentList(), sortComparator);
-					} else {
-						messageargumentList.add(messageargumentListInstance);
-						messageBody.setMessageargumentList(messageargumentList);
-					}
+					messageBody.getMessageargumentList().add(messageargumentListInstance);
+					Collections.sort(messageBody.getMessageargumentList(), sortComparator);
 				}
 			}
 			if (line.contains("}")) {
