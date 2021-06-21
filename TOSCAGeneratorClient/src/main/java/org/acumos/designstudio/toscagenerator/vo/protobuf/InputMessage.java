@@ -26,7 +26,15 @@ public class InputMessage implements Serializable {
 	private static final long serialVersionUID = 4667774275328976156L;
 	
 	private String inputMessageName = "";
-	
+	private boolean stream = false;
+
+	public void setStream(boolean s) {
+		this.stream = s;
+	}
+	public boolean getStream() {
+		return stream;
+	}
+
 	public String getInputMessageName() {
 		return inputMessageName;
 	}

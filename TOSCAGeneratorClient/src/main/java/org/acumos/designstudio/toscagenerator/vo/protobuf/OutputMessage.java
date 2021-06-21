@@ -26,6 +26,14 @@ public class OutputMessage implements Serializable{
 
 	private static final long serialVersionUID = -1615735201708994363L;
 	private String outPutMessageName = "";
+	private boolean stream = false;
+
+	public void setStream(boolean s) {
+		this.stream = s;
+	}
+	public boolean getStream() {
+		return stream;
+	}
 
 	public String getOutPutMessageName() {
 		return outPutMessageName;
