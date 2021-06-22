@@ -22,7 +22,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.acumos.on-boarding</groupId>
 	<artifactId>TOSCAModelGeneratorClient</artifactId>
-	<version>4.6.13-ai4eu</version>
+	<version>4.6.14-ai4eu</version>
 	<packaging>jar</packaging>
 	<name>Design Studio TOSCAModelGeneratorClient</name>
 	<properties>

@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
@@ -176,11 +178,10 @@ public class ProtobufGeneratorService {
 				isMessage = false;
 				messageBody = new MessageBody();
 
-				messageBody = costructMessage(line, messageBody, null);
+				messageBody = costructMessage(line, messageBody);
 
 			} else if (isMessage && !line.contains("}")) {
-				messageargumentList = new ArrayList<MessageargumentList>();
-				messageBody = costructMessage(line, messageBody, messageargumentList);
+				messageBody = costructMessage(line, messageBody);
 			} else if (isMessage && line.contains("}")) {
 				messageBodyList.add(messageBody);
 				protoBufClass.setListOfMessages(messageBodyList);
@@ -204,11 +205,13 @@ public class ProtobufGeneratorService {
 				String inputParameterString = "";
 				String outPutParameterString = "";
 
-				String line1 = line.split("returns")[0];
+				// line1 is everything before returns
+				String line1 = line.split("returns")[0].trim();
 				operationType = line1.split(" ", 2)[0].trim();
-				String line2 = line1.split(" ", 2)[1].replace(" ", "").replace("(", "%br%").replace(")", "").trim();
-				operationName = line2.split("%br%")[0].trim();
-				inputParameterString = line2.split("%br%")[1].trim();
+				// line2 is operation name and input parameter
+				String line2 = line1.split(" ", 2)[1].replace(")", "").trim();
+				operationName = line2.split("\\(")[0].trim();
+				inputParameterString = line2.split("\\(")[1].trim();
 				outPutParameterString = line.split("returns")[1].replace("(", "").replace(")", "").trim();
 				operation.setOperationType(operationType);
 				operation.setOperationName(operationName);
@@ -279,8 +282,7 @@ public class ProtobufGeneratorService {
 		return "";
 	}
 
-	private MessageBody costructMessage(String line, MessageBody messageBody,
-			List<MessageargumentList> messageargumentList) {
+	private MessageBody costructMessage(String line, MessageBody messageBody) {
 		try {
 			if (line.startsWith("message")) {
 				String[] fields = line.split(" ");
@@ -310,13 +312,8 @@ public class ProtobufGeneratorService {
 						}
 					}
 					SortComparator sortComparator = SortFactory.getComparator();
-					if (messageBody.getMessageargumentList() != null) {
-						messageBody.getMessageargumentList().add(messageargumentListInstance);
-						Collections.sort(messageBody.getMessageargumentList(), sortComparator);
-					} else {
-						messageargumentList.add(messageargumentListInstance);
-						messageBody.setMessageargumentList(messageargumentList);
-					}
+					messageBody.getMessageargumentList().add(messageargumentListInstance);
+					Collections.sort(messageBody.getMessageargumentList(), sortComparator);
 				}
 			}
 			if (line.contains("}")) {
@@ -352,39 +349,66 @@ public class ProtobufGeneratorService {
 
 	}
 
-	private List<InputMessage> constructInputMessage(String inputParameterString) {
+	private List<InputMessage> constructInputMessage(String inputParameterString) throws ServiceException {
 		logger.debug("constructInputMessage() strated");
 		listOfInputMessages = new ArrayList<InputMessage>();
-		try {
 
-			String[] inPutParameterArray = inputParameterString.split(",");
-			for (int i = 0; i < inPutParameterArray.length; i++) {
-				InputMessage inputMessage = new InputMessage();
-				inputMessage.setInputMessageName(inPutParameterArray[i]);
-				listOfInputMessages.add(inputMessage);
-				listOfInputAndOutputMessage.add(inputMessage.getInputMessageName());
-			}
-		} catch (Exception ex) {
-			logger.error("Exception Occured  constructInputMessage()", ex);
+		String[] inPutParameterArray = inputParameterString.split(",");
+		if (inPutParameterArray.length != 1) {
+			throw new ServiceException("operation needs exactly one input parameter, found '"+inputParameterString+"'", ServiceException.TOSCA_FILE_GENERATION_ERROR_CODE, ServiceException.TOSCA_FILE_GENERATION_ERROR_DESC);
 		}
+		for (int i = 0; i < inPutParameterArray.length; i++) {
+			InputMessage inputMessage = new InputMessage();
+
+			// handle stream input
+			String[] parts = inPutParameterArray[i].split("[  \\t]+");
+			if (parts.length == 1) {
+				inputMessage.setStream(false);
+				inputMessage.setInputMessageName(parts[0]);
+			} else {
+				if (parts.length == 2 && parts[0].equals("stream")) {
+					inputMessage.setStream(true);
+					inputMessage.setInputMessageName(parts[1]);
+				} else {
+					throw new ServiceException("service operation has invalid input parameter '"+inPutParameterArray[i]+"' parts="+parts.length+" parts[0]="+parts[0], ServiceException.TOSCA_FILE_GENERATION_ERROR_CODE, ServiceException.TOSCA_FILE_GENERATION_ERROR_DESC);
+				}
+			}
+
+			listOfInputMessages.add(inputMessage);
+			listOfInputAndOutputMessage.add(inputMessage.getInputMessageName());
+		}
+
 		logger.debug("constructInputMessage() end");
 		return listOfInputMessages;
 
 	}
 
-	private List<OutputMessage> constructOutputMessage(String outPutParameterString) {
+	private List<OutputMessage> constructOutputMessage(String outPutParameterString) throws ServiceException {
 		logger.debug("constructOutputMessage() strated");
 		listOfOputPutMessages = new ArrayList<OutputMessage>();
-		try {
-			String[] outPutParameterArray = outPutParameterString.split(",");
-			for (int i = 0; i < outPutParameterArray.length; i++) {
-				OutputMessage outputMessage = new OutputMessage();
-				outputMessage.setOutPutMessageName(outPutParameterArray[i]);
-				listOfOputPutMessages.add(outputMessage);
-				listOfInputAndOutputMessage.add(outputMessage.getOutPutMessageName());
+		String[] outPutParameterArray = outPutParameterString.split(",");
+		if (outPutParameterArray.length != 1) {
+			throw new ServiceException("operation needs exactly one output parameter, found '"+outPutParameterString+"'", ServiceException.TOSCA_FILE_GENERATION_ERROR_CODE, ServiceException.TOSCA_FILE_GENERATION_ERROR_DESC);
+		}
+		for (int i = 0; i < outPutParameterArray.length; i++) {
+			OutputMessage outputMessage = new OutputMessage();
+
+			// handle stream output
+			String[] parts = outPutParameterArray[i].split("[  \\t]+");
+			if (parts.length == 1) {
+				outputMessage.setStream(false);
+				outputMessage.setOutPutMessageName(parts[0]);
+			} else {
+				if (parts.length == 2 && parts[0].equals("stream")) {
+					outputMessage.setStream(true);
+					outputMessage.setOutPutMessageName(parts[1]);
+				} else {
+					throw new ServiceException("service operation has invalid output parameter '"+outPutParameterArray[i]+"' parts="+parts.length+" parts[0]="+parts[0], ServiceException.TOSCA_FILE_GENERATION_ERROR_CODE, ServiceException.TOSCA_FILE_GENERATION_ERROR_DESC);
+				}
 			}
-		} catch (Exception ex) {
-			logger.error("constructOutputMessage() end", ex);
+
+			listOfOputPutMessages.add(outputMessage);
+			listOfInputAndOutputMessage.add(outputMessage.getOutPutMessageName());
 		}
 		logger.debug("constructOutputMessage() end");
 		return listOfOputPutMessages;
@@ -392,6 +416,7 @@ public class ProtobufGeneratorService {
 
 	private List<MessageBody> constructListOfMessages(String protoBufToJsonString) throws Exception {
 		List<MessageBody> listOfMessages = new ArrayList<MessageBody>();
+		Set<String> setOfMessageNames = new HashSet<String>();
 		MessageBody messageBody = null;
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
@@ -408,38 +433,31 @@ public class ProtobufGeneratorService {
 
 		List<OutputMessage> outputMessages = null;
 		String outputMessageName = null;
-		boolean msgExist = false;
 		for (Operation operation : listOfOperations) {
 			inputMessages = operation.getListOfInputMessages();
 			for (InputMessage inputmsg : inputMessages) {
 				inputMessageName = inputmsg.getInputMessageName();
-				// expanded
-				messageBody = constructExpandedMessageBody(inputMessageName, protoBufClass.getListOfMessages(), "");
-				if (null != messageBody) {
-					listOfMessages.add(messageBody);
-				}
-
-			}
-			outputMessages = operation.getListOfOutputMessages();
-
-			for (OutputMessage outputmsg : outputMessages) {
-				outputMessageName = outputmsg.getOutPutMessageName();
-				for (InputMessage inputmsg : inputMessages) {
-					if (inputmsg.getInputMessageName().equals(outputMessageName)) {
-						msgExist = true;
-						break;
-					}
-				}
-				if (!msgExist) {
-					messageBody = constructExpandedMessageBody(outputMessageName, protoBufClass.getListOfMessages(),
-							"");
+				if (!setOfMessageNames.contains(inputMessageName)) {
+					// expanded
+					messageBody = constructExpandedMessageBody(inputMessageName, protoBufClass.getListOfMessages(), "");
 					if (null != messageBody) {
 						listOfMessages.add(messageBody);
+						setOfMessageNames.add(inputMessageName);
 					}
 				}
-				msgExist = false;
 			}
 
+			outputMessages = operation.getListOfOutputMessages();
+			for (OutputMessage outputmsg : outputMessages) {
+				outputMessageName = outputmsg.getOutPutMessageName();
+				if (!setOfMessageNames.contains(outputMessageName)) {
+					messageBody = constructExpandedMessageBody(outputMessageName, protoBufClass.getListOfMessages(), "");
+					if (null != messageBody) {
+						listOfMessages.add(messageBody);
+						setOfMessageNames.add(outputMessageName);
+					}
+				}
+			}
 		}
 
 		return listOfMessages;

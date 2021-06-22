@@ -173,7 +173,7 @@ public class TGIFTest {
 		request.setVersion("1");
 		request.getVersion();
 		
-		Request request1 = new Request(arrayObj, "1");
+		Request request1 = new Request(arrayObj, "1", false);
 
 		call.setRequest(request);
 		call.getRequest();
